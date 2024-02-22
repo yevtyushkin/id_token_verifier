@@ -5,10 +5,11 @@ use chrono::{DateTime, Duration, Utc};
 use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::jwk::JwkSet;
 use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
+use reqwest::Client as HttpClient;
 use serde::de::DeserializeOwned;
 
-use crate::jwk_set_client::JwkSetClient;
-use crate::{Error, IdTokenErrorKind, JwkSetErrorKind};
+use crate::jwk_set_client::{FetchSource, HttpBasedJwkSetClient, JwkSetClient};
+use crate::prelude::*;
 
 /// A base trait for ID Token verifiers that receive an ID token and return the [Payload] if verifications succeeds.
 pub trait IdTokenVerifier<Payload> {
@@ -25,6 +26,79 @@ where
 {
     /// An inner state of this verifier.
     inner: Arc<JwkBasedJwtIdTokenVerifierInner<Client>>,
+}
+
+/// A builder that helps to construct a [JwkBasedJwtIdTokenVerifier].
+pub struct JwkBasedJwtIdTokenVerifierBuilder {
+    /// A [FetchSource] for the [JwkSetClient].
+    fetch_source: FetchSource,
+
+    /// A custom [HttpClient] for the [JwkSetClient].
+    custom_http_client: Option<HttpClient>,
+
+    /// A [ValidationConfig] with the token validation rules.
+    validation_config: ValidationConfig,
+
+    /// An optional [Duration] for the [Cache].
+    cache_ttl: Option<Duration>,
+}
+
+impl JwkBasedJwtIdTokenVerifierBuilder {
+    /// Returns a new instance of the [JwkBasedJwtIdTokenVerifierBuilder] with the given `source`.
+    pub fn new(fetch_source: FetchSource) -> JwkBasedJwtIdTokenVerifierBuilder {
+        JwkBasedJwtIdTokenVerifierBuilder {
+            fetch_source,
+            custom_http_client: None,
+            validation_config: ValidationConfig {
+                valid_issuers: vec![],
+                valid_audience: vec![],
+            },
+            cache_ttl: None,
+        }
+    }
+
+    /// Applies the given custom [HttpClient] to this builder.
+    pub fn with_http_client(
+        mut self,
+        http_client: HttpClient,
+    ) -> JwkBasedJwtIdTokenVerifierBuilder {
+        self.custom_http_client = Some(http_client);
+        self
+    }
+
+    /// Applies the given validation options to this builder.
+    pub fn with_validation_options(
+        mut self,
+        valid_issuers: Vec<String>,
+        valid_audience: Vec<String>,
+    ) -> JwkBasedJwtIdTokenVerifierBuilder {
+        self.validation_config.valid_issuers = valid_issuers;
+        self.validation_config.valid_audience = valid_audience;
+        self
+    }
+
+    /// Applies the given cache options to this builder.
+    pub fn with_cache(mut self, cache_ttl: Duration) -> JwkBasedJwtIdTokenVerifierBuilder {
+        self.cache_ttl = Some(cache_ttl);
+        self
+    }
+
+    pub fn build(self) -> JwkBasedJwtIdTokenVerifier<HttpBasedJwkSetClient> {
+        let http_client = self.custom_http_client.unwrap_or_else(HttpClient::new);
+        let client = HttpBasedJwkSetClient::new(http_client, self.fetch_source);
+        let cache = self.cache_ttl.map(|ttl| Cache {
+            state: Mutex::new(None),
+            ttl,
+        });
+
+        JwkBasedJwtIdTokenVerifier {
+            inner: Arc::new(JwkBasedJwtIdTokenVerifierInner {
+                client,
+                validation_config: self.validation_config,
+                cache,
+            }),
+        }
+    }
 }
 
 /// An inner state of the [JwkBasedJwtIdTokenVerifier].
@@ -165,7 +239,6 @@ pub struct ValidationConfig {
 #[cfg(test)]
 mod tests {
     use chrono::{Duration, Utc};
-    use std::sync::atomic::Ordering::Relaxed;
     use std::sync::atomic::{AtomicI8, Ordering};
     use std::sync::{Arc, Mutex};
 
@@ -175,7 +248,7 @@ mod tests {
 
     use crate::id_token_verifier::{Cache, JwkBasedJwtIdTokenVerifierInner};
     use crate::jwk_set_client::JwkSetClient;
-    use crate::{Error, IdTokenVerifier, JwkBasedJwtIdTokenVerifier, ValidationConfig};
+    use crate::prelude::*;
 
     #[tokio::test]
     async fn test_verification_happy_path() {
@@ -246,11 +319,11 @@ mod tests {
 
         let id_token_payload: TestIdTokenPayload = verifier.verify(&id_token).await.unwrap();
         assert_eq!(id_token_payload, payload);
-        assert_eq!(number_of_fetches.load(Relaxed), 1);
+        assert_eq!(number_of_fetches.load(Ordering::Relaxed), 1);
 
         let id_token_payload: TestIdTokenPayload = verifier.verify(&id_token).await.unwrap();
         assert_eq!(id_token_payload, payload);
-        assert_eq!(number_of_fetches.load(Relaxed), 1);
+        assert_eq!(number_of_fetches.load(Ordering::Relaxed), 1);
     }
 
     /// Test implementation of [JwkSetClient].

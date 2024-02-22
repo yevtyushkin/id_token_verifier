@@ -4,7 +4,7 @@ use jsonwebtoken::jwk::JwkSet;
 use reqwest::{Client as HttpClient, Url};
 use serde::Deserialize;
 
-use crate::{Error, JwkSetErrorKind};
+use crate::prelude::*;
 
 /// A base trait for [JwkSet] clients.
 pub trait JwkSetClient {
@@ -16,6 +16,18 @@ pub trait JwkSetClient {
 pub struct HttpBasedJwkSetClient {
     /// An internal state of the [HttpBasedJwkSetClient].
     inner: Arc<HttpBasedJwkSetClientInner>,
+}
+
+impl HttpBasedJwkSetClient {
+    /// Returns a new instance of the [HttpBasedJwkSetClient] with the given [HttpClient] and [FetchSource].
+    pub fn new(http_client: HttpClient, fetch_source: FetchSource) -> Self {
+        Self {
+            inner: Arc::new(HttpBasedJwkSetClientInner {
+                http_client,
+                fetch_source,
+            }),
+        }
+    }
 }
 
 impl JwkSetClient for HttpBasedJwkSetClient {
@@ -108,7 +120,7 @@ pub enum FetchSource {
 #[cfg(test)]
 mod tests {
     use crate::jwk_set_client::*;
-    use crate::Error;
+    use crate::prelude::Error;
     use axum::routing::get;
     use axum::{Json, Router};
     use jsonwebtoken::jwk::*;

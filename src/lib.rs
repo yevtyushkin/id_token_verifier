@@ -1,7 +1,9 @@
-mod error;
-mod id_token_verifier;
-mod jwk_set_client;
+pub mod error;
+pub mod id_token_verifier;
+pub mod jwk_set_client;
 
-pub use crate::error::*;
-pub use crate::error::*;
-pub use crate::id_token_verifier::*;
+pub mod prelude {
+    pub use crate::error::*;
+    pub use crate::id_token_verifier::*;
+    pub use crate::jwk_set_client::*;
+}
