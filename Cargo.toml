@@ -1,0 +1,18 @@
+[package]
+name = "id_token_verifier"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.33"
+jsonwebtoken = "9.2.0"
+reqwest = { version = "0.11.23", features = ["json"] }
+serde = { version = "1.0.196", features = ["derive"] }
+url = "2.5.0"
+
+[dev-dependencies]
+axum = { version = "0.7.4" }
+tokio = { version = "1.35.1", features = ["macros"] }
+serial_test = { version = "3.0.0" }
