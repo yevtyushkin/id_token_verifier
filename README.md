@@ -1,7 +1,6 @@
 ### id_token_verifier
 
-This is a simple library that provides a base interface of an ID token verifier, along with a default JWK Set-based JWT
-ID token verifier.
+A tiny library for declarative verification of ID tokens.
 
 ### Examples
 
