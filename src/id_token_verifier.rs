@@ -286,7 +286,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_verification_caching() {
-        let mut number_of_fetches = Arc::new(AtomicI8::new(0));
+        let number_of_fetches = Arc::new(AtomicI8::new(0));
         let client = TestJwkSetClient {
             number_of_fetches: number_of_fetches.clone(),
             stub_result: || Ok(jwk_set()),
