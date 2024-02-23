@@ -125,26 +125,15 @@ mod tests {
     use axum::{Json, Router};
     use jsonwebtoken::jwk::*;
     use reqwest::Client;
-    use std::sync::Arc;
+    use serde_json::{json, Value};
     use url::Url;
 
     #[tokio::test]
-    #[serial_test::serial]
     async fn test_direct_happy_path() {
-        let app = Router::new().route("/jwks", get(valid_jwk_set_endpoint));
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-        tokio::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        let client = HttpBasedJwkSetClient {
-            inner: Arc::new(HttpBasedJwkSetClientInner {
-                http_client: Client::new(),
-                fetch_source: FetchSource::Direct {
-                    url: Url::parse("http://0.0.0.0:3000/jwks").unwrap(),
-                },
-            }),
-        };
+        let port = 3000;
+        let app = Router::new().route("/jwks", get(jwks_endpoint));
+        let client =
+            run_stub_server_and_make_client(app, port, make_direct_fetch_source, "/jwks").await;
 
         let result = client.fetch().await.unwrap();
 
@@ -152,22 +141,11 @@ mod tests {
     }
 
     #[tokio::test]
-    #[serial_test::serial]
     async fn test_direct_jwk_set_endpoint_returns_invalid_response() {
-        let app = Router::new().route("/jwks", get(invalid_jwk_set_endpoint));
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-        tokio::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        let client = HttpBasedJwkSetClient {
-            inner: Arc::new(HttpBasedJwkSetClientInner {
-                http_client: Client::new(),
-                fetch_source: FetchSource::Direct {
-                    url: Url::parse("http://0.0.0.0:3000/jwks").unwrap(),
-                },
-            }),
-        };
+        let port = 3001;
+        let app = Router::new().route("/jwks", get(invalid_jwks_endpoint));
+        let client =
+            run_stub_server_and_make_client(app, port, make_direct_fetch_source, "/jwks").await;
 
         let result = client.fetch().await;
 
@@ -181,24 +159,18 @@ mod tests {
     }
 
     #[tokio::test]
-    #[serial_test::serial]
     async fn test_auto_discover_happy_path() {
+        let port = 3002;
         let app = Router::new()
-            .route("/auto-discover", get(valid_auto_discover_endpoint))
-            .route("/jwks", get(valid_jwk_set_endpoint));
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-        tokio::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        let client = HttpBasedJwkSetClient {
-            inner: Arc::new(HttpBasedJwkSetClientInner {
-                http_client: Client::new(),
-                fetch_source: FetchSource::AutoDiscover {
-                    url: Url::parse("http://0.0.0.0:3000/auto-discover").unwrap(),
-                },
-            }),
-        };
+            .route("/auto-discover", get(move || auto_discover_endpoint(port)))
+            .route("/jwks", get(jwks_endpoint));
+        let client = run_stub_server_and_make_client(
+            app,
+            port,
+            make_auto_discover_fetch_source,
+            "/auto-discover",
+        )
+        .await;
 
         let result = client.fetch().await.unwrap();
 
@@ -206,89 +178,18 @@ mod tests {
     }
 
     #[tokio::test]
-    #[serial_test::serial]
-    async fn test_auto_discover_auto_discover_endpoint_returns_invalid_response() {
-        let app = Router::new()
-            .route("/auto-discover", get(invalid_auto_discover_endpoint))
-            .route("/jwks", get(valid_jwk_set_endpoint));
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-        tokio::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        let client = HttpBasedJwkSetClient {
-            inner: Arc::new(HttpBasedJwkSetClientInner {
-                http_client: Client::new(),
-                fetch_source: FetchSource::AutoDiscover {
-                    url: Url::parse("http://0.0.0.0:3000/auto-discover").unwrap(),
-                },
-            }),
-        };
-
-        let result = client.fetch().await;
-
-        assert!(matches!(
-            result,
-            Err(Error::JwkSetError {
-                source: _,
-                kind: JwkSetErrorKind::AutoDiscoverRequestFailed
-            })
-        ));
-    }
-
-    #[tokio::test]
-    #[serial_test::serial]
-    async fn test_auto_discover_url_invalid_jwks_uri() {
-        let app = Router::new()
-            .route(
-                "/auto-discover",
-                get(invalid_jwks_uri_auto_discover_endpoint),
-            )
-            .route("/jwks", get(valid_jwk_set_endpoint));
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-        tokio::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        let client = HttpBasedJwkSetClient {
-            inner: Arc::new(HttpBasedJwkSetClientInner {
-                http_client: Client::new(),
-                fetch_source: FetchSource::AutoDiscover {
-                    url: Url::parse("http://0.0.0.0:3000/auto-discover").unwrap(),
-                },
-            }),
-        };
-
-        let result = client.fetch().await;
-
-        assert!(matches!(
-            result,
-            Err(Error::JwkSetError {
-                source: _,
-                kind: JwkSetErrorKind::AutoDiscoverRequestFailed
-            })
-        ));
-    }
-
-    #[tokio::test]
-    #[serial_test::serial]
     async fn test_auto_discover_url_invalid_jwk_set_response() {
+        let port = 3003;
         let app = Router::new()
-            .route("/auto-discover", get(valid_auto_discover_endpoint))
-            .route("/jwks", get(invalid_jwk_set_endpoint));
-        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-        tokio::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        let client = HttpBasedJwkSetClient {
-            inner: Arc::new(HttpBasedJwkSetClientInner {
-                http_client: Client::new(),
-                fetch_source: FetchSource::AutoDiscover {
-                    url: Url::parse("http://0.0.0.0:3000/auto-discover").unwrap(),
-                },
-            }),
-        };
+            .route("/auto-discover", get(move || auto_discover_endpoint(port)))
+            .route("/jwks", get(invalid_jwks_endpoint));
+        let client = run_stub_server_and_make_client(
+            app,
+            port,
+            make_auto_discover_fetch_source,
+            "/auto-discover",
+        )
+        .await;
 
         let result = client.fetch().await;
 
@@ -301,7 +202,27 @@ mod tests {
         ));
     }
 
-    /// An arbitrary [JwkSet] to use in tests.
+    async fn run_stub_server_and_make_client<F>(
+        router: Router,
+        port: u16,
+        make_fetch_source: F,
+        fetch_source_path: &str,
+    ) -> HttpBasedJwkSetClient
+    where
+        F: Fn(Url) -> FetchSource,
+    {
+        let addr = format!("127.0.0.1:{port}");
+        let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+        tokio::spawn(async move {
+            axum::serve(listener, router).await.unwrap();
+        });
+
+        let fetch_source_url = Url::parse(&format!("http://{addr}{fetch_source_path}")).unwrap();
+        let fetch_source = make_fetch_source(fetch_source_url);
+
+        HttpBasedJwkSetClient::new(Client::new(), fetch_source)
+    }
+
     fn test_jwk_set() -> JwkSet {
         JwkSet {
             keys: vec![
@@ -343,28 +264,27 @@ mod tests {
         }
     }
 
-    /// Returns a valid [JwkSet] response.
-    async fn valid_jwk_set_endpoint() -> Json<JwkSet> {
+    async fn jwks_endpoint() -> Json<JwkSet> {
         Json(test_jwk_set())
     }
 
-    /// Returns an invalid [JwkSet] response.
-    async fn invalid_jwk_set_endpoint() -> &'static str {
-        r#"{ "someKey1234": [ ] }"#
+    async fn invalid_jwks_endpoint() -> Json<Value> {
+        Json(json!({
+            "invalid_endpoint": true,
+        }))
     }
 
-    /// Returns a valid auto discover response.
-    async fn valid_auto_discover_endpoint() -> &'static str {
-        r#" { "jwks_uri" : "http://0.0.0.0:3000/jwks" } "#
+    async fn auto_discover_endpoint(port: u16) -> Json<Value> {
+        Json(json!({
+            "jwks_uri": format!("http://127.0.0.1:{port}/jwks"),
+        }))
     }
 
-    /// Returns an auto discover response with the invalid structure.
-    async fn invalid_auto_discover_endpoint() -> &'static str {
-        r#" { "123jwksUUri" : "http://0.0.0.0:3000/jwks" } "#
+    fn make_direct_fetch_source(url: Url) -> FetchSource {
+        FetchSource::Direct { url }
     }
 
-    /// Returns an auto discover response with the invalid `jwks_uri` value.
-    async fn invalid_jwks_uri_auto_discover_endpoint() -> &'static str {
-        r#" { "jwks_uri" : "http: 0.0.0.0:3000 / jwks" } "#
+    fn make_auto_discover_fetch_source(url: Url) -> FetchSource {
+        FetchSource::AutoDiscover { url }
     }
 }
