@@ -211,7 +211,7 @@ mod tests {
     where
         F: Fn(Url) -> FetchSource,
     {
-        let addr = format!("0.0.0.0:{port}");
+        let addr = format!("127.0.0.1:{port}");
         let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
         tokio::spawn(async move {
             axum::serve(listener, router).await.unwrap();
@@ -276,7 +276,7 @@ mod tests {
 
     async fn auto_discover_endpoint(port: u16) -> Json<Value> {
         Json(json!({
-            "jwks_uri": format!("http://0.0.0.0:{port}/jwks"),
+            "jwks_uri": format!("http://127.0.0.1:{port}/jwks"),
         }))
     }
 
