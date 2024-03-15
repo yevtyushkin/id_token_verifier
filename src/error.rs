@@ -1,7 +1,10 @@
+use thiserror::Error as ThisError;
+
 /// An error that can occur when verifying the ID token.
-#[derive(Debug)]
+#[derive(Debug, ThisError)]
 pub enum Error {
     /// An error that indicates a failed decoding/validation of the ID token.
+    #[error("IdTokenError: {kind:?}")]
     IdTokenError {
         /// An [IdTokenErrorKind] of this error.
         kind: IdTokenErrorKind,
@@ -11,6 +14,7 @@ pub enum Error {
     },
 
     /// An error that indicates a failed fetch of the JWK Set for signature verification.
+    #[error("JwkSetError: {kind:?}")]
     JwkSetError {
         /// A [JwkSetErrorKind] of this error.
         kind: JwkSetErrorKind,
@@ -20,6 +24,7 @@ pub enum Error {
     },
 
     /// An error occurred during acquiring the internal cache.
+    #[error("CacheError")]
     CacheError,
 }
 
