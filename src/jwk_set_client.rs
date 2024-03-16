@@ -1,3 +1,4 @@
+use std::future::Future;
 use std::sync::Arc;
 
 use jsonwebtoken::jwk::JwkSet;
@@ -9,7 +10,7 @@ use crate::prelude::*;
 /// A base trait for [JwkSet] clients.
 pub trait JwkSetClient {
     /// Fetches the [JwkSet].
-    async fn fetch(&self) -> Result<JwkSet, Error>;
+    fn fetch(&self) -> impl Future<Output = Result<JwkSet, Error>> + Send;
 }
 
 /// An [HttpClient]-based implementation of the [JwkSetClient].
@@ -119,14 +120,15 @@ pub enum FetchSource {
 
 #[cfg(test)]
 mod tests {
-    use crate::jwk_set_client::*;
-    use crate::prelude::Error;
     use axum::routing::get;
     use axum::{Json, Router};
     use jsonwebtoken::jwk::*;
     use reqwest::Client;
     use serde_json::{json, Value};
     use url::Url;
+
+    use crate::jwk_set_client::*;
+    use crate::prelude::Error;
 
     #[tokio::test]
     async fn test_direct_happy_path() {

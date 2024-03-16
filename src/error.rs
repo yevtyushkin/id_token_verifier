@@ -22,10 +22,6 @@ pub enum Error {
         /// An optional source of this error.
         source: Box<dyn std::error::Error + Send + Sync + 'static>,
     },
-
-    /// An error occurred during acquiring the internal cache.
-    #[error("CacheError")]
-    CacheError,
 }
 
 /// A kind of [Error::IdTokenError].

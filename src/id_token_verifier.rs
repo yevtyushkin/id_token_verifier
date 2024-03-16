@@ -1,5 +1,6 @@
+use std::future::Future;
 use std::ops::{Deref, DerefMut};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 
 use chrono::{DateTime, Duration, Utc};
 use jsonwebtoken::errors::ErrorKind;
@@ -7,6 +8,7 @@ use jsonwebtoken::jwk::JwkSet;
 use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
 use reqwest::Client as HttpClient;
 use serde::de::DeserializeOwned;
+use tokio::sync::Mutex;
 
 use crate::jwk_set_client::{FetchSource, HttpBasedJwkSetClient, JwkSetClient};
 use crate::prelude::*;
@@ -16,7 +18,7 @@ pub trait IdTokenVerifier<Payload> {
     /// Verifies the given `id_token`.
     ///
     /// Returns [Ok(Payload)] if verification succeeds or an [Err(Error)] otherwise.
-    async fn verify(&self, id_token: &str) -> Result<Payload, Error>;
+    fn verify(&self, id_token: &str) -> impl Future<Output = Result<Payload, Error>> + Send;
 }
 
 /// A JWT ID token verifier based on the internal [JwkSetClient] for fetching JWK sets for token signature verification.
@@ -118,8 +120,8 @@ where
 
 impl<Client, Payload> IdTokenVerifier<Payload> for JwkBasedJwtIdTokenVerifier<Client>
 where
-    Client: JwkSetClient,
-    Payload: DeserializeOwned,
+    Client: JwkSetClient + Send + Sync,
+    Payload: DeserializeOwned + Send + Sync,
 {
     async fn verify(&self, token: &str) -> Result<Payload, Error> {
         let header = decode_header(token).map_err(|e| Error::IdTokenError {
@@ -139,7 +141,7 @@ where
 
         let jwk_set = match &self.inner.cache {
             Some(cache) => {
-                let mut cache_state = cache.state.lock().map_err(|_| Error::CacheError)?;
+                let mut cache_state = cache.state.lock().await;
 
                 match cache_state.deref() {
                     Some(cache_state) if &Utc::now() <= &cache_state.expire_after => {
@@ -240,11 +242,12 @@ pub struct ValidationConfig {
 mod tests {
     use chrono::{Duration, Utc};
     use std::sync::atomic::{AtomicI8, Ordering};
-    use std::sync::{Arc, Mutex};
+    use std::sync::Arc;
 
     use jsonwebtoken::jwk::*;
     use jsonwebtoken::{encode, Algorithm, EncodingKey, Header};
     use serde::{Deserialize, Serialize};
+    use tokio::sync::Mutex;
 
     use crate::id_token_verifier::{Cache, JwkBasedJwtIdTokenVerifierInner};
     use crate::jwk_set_client::JwkSetClient;
@@ -340,7 +343,7 @@ mod tests {
 
     impl<F> JwkSetClient for TestJwkSetClient<F>
     where
-        F: Fn() -> Result<JwkSet, Error>,
+        F: Fn() -> Result<JwkSet, Error> + Sync,
     {
         async fn fetch(&self) -> Result<JwkSet, Error> {
             self.number_of_fetches.fetch_add(1, Ordering::Relaxed);
