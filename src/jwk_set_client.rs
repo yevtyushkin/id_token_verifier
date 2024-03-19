@@ -110,7 +110,7 @@ struct HttpBasedJwkSetClientInner {
 }
 
 /// A source for fetching JWK sets.
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub enum FetchSource {
     /// A [FetchSource] that follows the `jwks_uri` field from the response for fetching [JwkSet]s (see https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata).
     AutoDiscover { url: Url },
