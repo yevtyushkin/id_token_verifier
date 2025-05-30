@@ -224,42 +224,42 @@ mod tests {
                 verifier_name: Some("verifier_name".into()),
             }
         );
+    }
 
-        #[test]
-        fn builder_with_default_fields() {
-            let config = IdTokenVerifierConfig::builder()
-                .client(
-                    JwksClientConfig::builder()
-                        .jwks_url(JwksUrl::Direct("http://direct.uri".parse().unwrap()))
-                        .build(),
-                )
-                .validation(
-                    ValidationConfig::builder()
-                        .allowed_iss(OneOrVec::One(Iss("iss".into())))
-                        .allowed_aud(OneOrVec::Vec(vec![Aud("aud".into()), Aud("aud2".into())]))
-                        .build(),
-                )
-                .build();
+    #[test]
+    fn builder_with_default_fields() {
+        let config = IdTokenVerifierConfig::builder()
+            .client(
+                JwksClientConfig::builder()
+                    .jwks_url(JwksUrl::Direct("http://direct.uri".parse().unwrap()))
+                    .build(),
+            )
+            .validation(
+                ValidationConfig::builder()
+                    .allowed_iss(OneOrVec::One(Iss("iss".into())))
+                    .allowed_aud(OneOrVec::Vec(vec![Aud("aud".into()), Aud("aud2".into())]))
+                    .build(),
+            )
+            .build();
 
-            assert_eq!(
-                config,
-                IdTokenVerifierConfig {
-                    client: JwksClientConfig {
-                        jwks_url: JwksUrl::Direct("http://direct.uri".parse().unwrap()),
-                        backoff: BackoffConfig::NoBackoff,
-                    },
-                    cache: JwksCacheConfig::default(),
-                    validation: ValidationConfig {
-                        allowed_iss: OneOrVec::One(Iss("iss".into())),
-                        allowed_aud: OneOrVec::Vec(vec![Aud("aud".into()), Aud("aud2".into())]),
-                        validate_exp: default_validate_exp(),
-                        validate_nbf: false,
-                        leeway_seconds: default_leeway_seconds(),
-                        allow_missing_jwk_alg_parameter: false,
-                    },
-                    verifier_name: None,
-                }
-            );
-        }
+        assert_eq!(
+            config,
+            IdTokenVerifierConfig {
+                client: JwksClientConfig {
+                    jwks_url: JwksUrl::Direct("http://direct.uri".parse().unwrap()),
+                    backoff: BackoffConfig::NoBackoff,
+                },
+                cache: JwksCacheConfig::default(),
+                validation: ValidationConfig {
+                    allowed_iss: OneOrVec::One(Iss("iss".into())),
+                    allowed_aud: OneOrVec::Vec(vec![Aud("aud".into()), Aud("aud2".into())]),
+                    validate_exp: default_validate_exp(),
+                    validate_nbf: false,
+                    leeway_seconds: default_leeway_seconds(),
+                    allow_missing_jwk_alg_parameter: false,
+                },
+                verifier_name: None,
+            }
+        );
     }
 }
