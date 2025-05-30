@@ -2,6 +2,7 @@
 name = "id_token_verifier"
 version = "0.0.1"
 edition = "2024"
+license = "MIT"
 authors = ["Daniyil Yevtyushkin <d.yevtyushkin.dev@gmail.com>"]
 description = "OpenID Connect ID Token Verifier In Rust"
 repository = "https://github.com/yevtyushkin/id_token_verifier"
