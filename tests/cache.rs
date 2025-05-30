@@ -2,7 +2,7 @@ mod common;
 
 use crate::common::*;
 use axum::Json;
-use id_token_verifier::verifier::{ IdTokenVerifierDefault};
+use id_token_verifier::verifier::IdTokenVerifierDefault;
 use jsonwebtoken::Header;
 use reqwest::Client;
 use serde_json::json;
@@ -49,9 +49,7 @@ async fn background_refresh_job() -> anyhow::Result<()> {
     // Background refresh job should have already refreshed the cache
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 1);
 
-    let id_token_decoded = verifier
-        .verify::<TestIdToken>(&id_token_encoded)
-        .await?;
+    let id_token_decoded = verifier.verify::<TestIdToken>(&id_token_encoded).await?;
 
     assert_eq!(id_token_decoded, id_token);
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 1);
@@ -94,9 +92,7 @@ async fn regular_cache() -> anyhow::Result<()> {
 
     let id_token_encoded = jsonwebtoken::encode(&header, &id_token, &key.encoding_key)?;
 
-    let id_token_decoded = verifier
-        .verify::<TestIdToken>(&id_token_encoded)
-        .await?;
+    let id_token_decoded = verifier.verify::<TestIdToken>(&id_token_encoded).await?;
 
     assert_eq!(id_token_decoded, id_token);
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 1);
@@ -106,9 +102,7 @@ async fn regular_cache() -> anyhow::Result<()> {
 
     let id_token_encoded = jsonwebtoken::encode(&header, &id_token2, &key.encoding_key)?;
 
-    let id_token_decoded2 = verifier
-        .verify::<TestIdToken>(&id_token_encoded)
-        .await?;
+    let id_token_decoded2 = verifier.verify::<TestIdToken>(&id_token_encoded).await?;
 
     assert_eq!(id_token_decoded2, id_token2);
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 1);
@@ -154,9 +148,7 @@ async fn regular_cache_reload_on_jwk_not_found() -> anyhow::Result<()> {
 
     let id_token_encoded = jsonwebtoken::encode(&header, &id_token, &key.encoding_key)?;
 
-    let id_token_decoded = verifier
-        .verify::<TestIdToken>(&id_token_encoded)
-        .await?;
+    let id_token_decoded = verifier.verify::<TestIdToken>(&id_token_encoded).await?;
 
     assert_eq!(id_token_decoded, id_token);
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 2);

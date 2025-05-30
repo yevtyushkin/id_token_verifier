@@ -38,8 +38,8 @@ mod tests {
     use crate::validation::*;
     use crate::verifier::IdTokenVerifierConfig;
     use backoff_config::BackoffConfig;
-    use figment::providers::Env;
     use figment::Figment;
+    use figment::providers::Env;
     use std::time::Duration;
 
     fn from_env() -> figment::Result<IdTokenVerifierConfig> {

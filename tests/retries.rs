@@ -7,8 +7,8 @@ use id_token_verifier::verifier::IdTokenVerifierDefault;
 use jsonwebtoken::Header;
 use reqwest::Client;
 use serde_json::json;
-use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
+use std::sync::atomic::AtomicUsize;
 use std::time::Duration;
 
 #[tokio::test]
@@ -52,9 +52,7 @@ async fn retries_when_oidc_metadata_request_fails() -> anyhow::Result<()> {
 
     let id_token_encoded = jsonwebtoken::encode(&header, &id_token, &key.encoding_key)?;
 
-    let id_token_decoded = verifier
-        .verify::<TestIdToken>(&id_token_encoded)
-        .await?;
+    let id_token_decoded = verifier.verify::<TestIdToken>(&id_token_encoded).await?;
 
     assert_eq!(id_token_decoded, id_token);
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 5);
@@ -101,9 +99,7 @@ async fn retries_when_jwks_request_fails() -> anyhow::Result<()> {
 
     let id_token_encoded = jsonwebtoken::encode(&header, &id_token, &key.encoding_key)?;
 
-    let id_token_decoded = verifier
-        .verify::<TestIdToken>(&id_token_encoded)
-        .await?;
+    let id_token_decoded = verifier.verify::<TestIdToken>(&id_token_encoded).await?;
 
     assert_eq!(id_token_decoded, id_token);
     assert_eq!(counter.load(std::sync::atomic::Ordering::Relaxed), 5);

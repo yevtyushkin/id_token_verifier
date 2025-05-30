@@ -1,6 +1,6 @@
 use crate::common::{AUD, AUD2, ISS};
 use id_token_verifier::cache::{JwksCacheConfig, default_expiration_duration};
-use id_token_verifier::client::{JwksClientConfig, default_backoff, JwksUrl};
+use id_token_verifier::client::{JwksClientConfig, JwksUrl, default_backoff};
 use id_token_verifier::util::OneOrVec;
 use id_token_verifier::validation::{Aud, Iss, ValidationConfig};
 use id_token_verifier::verifier::IdTokenVerifierConfig;
