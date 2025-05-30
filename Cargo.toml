@@ -1,0 +1,43 @@
+[package]
+name = "id_token_verifier"
+version = "0.0.1"
+edition = "2024"
+authors = ["Daniyil Yevtyushkin <d.yevtyushkin.dev@gmail.com>"]
+description = "OpenID Connect ID Token Verifier In Rust"
+repository = "https://github.com/yevtyushkin/id_token_verifier"
+homepage = "https://github.com/yevtyushkin/id_token_verifier"
+documentation = "https://docs.rs/id_token_verifier"
+readme = "README.md"
+categories = ["authentication", "web-programming"]
+keywords = ["openidconnect", "id_token", "auth", "configuration", "jwks"]
+exclude = ["examples/*", "tests/*", "*.md"]
+
+[dependencies]
+backoff-config = "0.0.5"
+backon = "1.5.1"
+bon = "3.6.3"
+derive_more = { version = "2.0.1", features = ["debug", "display"] }
+duration-str = { version = "0.17.0", features = ["serde"] }
+jsonwebtoken = "9.3.1"
+reqwest = { version = "0.12.18", features = ["json"] }
+serde = { version = "1.0.219", features = ["derive"] }
+thiserror = "2.0.12"
+tracing = { version = "0.1.41", optional = true }
+tokio = { version = "1.45.1", features = ["sync"] }
+url = { version = "2.5.4", features = ["serde"] }
+
+[dev-dependencies]
+anyhow = "1.0.98"
+axum = "0.8.4"
+base64 = "0.22.1"
+chrono = "0.4.41"
+figment = { version = "0.10.19", features = ["env", "test"] }
+rsa = { version = "0.9.8" }
+serde_json = "1.0.140"
+tokio = { version = "1.45.0", features = ["macros", "test-util"] }
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+uuid = { version = "1.16.0", features = ["v7"] }
+
+[features]
+default = []
+tracing = ["dep:tracing"]
