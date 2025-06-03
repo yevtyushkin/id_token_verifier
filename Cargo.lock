@@ -130,9 +130,9 @@ dependencies = [
 
 [[package]]
 name = "backoff-config"
-version = "0.0.5"
+version = "0.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eeafd0e7369d18150f2305b1ac384a3c6677ad4ea4452b7c6e059b52692e2914"
+checksum = "bf11b290be63406b1dbb8205cd61374fc3bccae1e113eb92ad47521f16006666"
 dependencies = [
  "backon",
  "duration-str",
