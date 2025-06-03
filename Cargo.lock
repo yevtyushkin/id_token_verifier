@@ -867,7 +867,7 @@ dependencies = [
 
 [[package]]
 name = "id_token_verifier"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "anyhow",
  "axum",
