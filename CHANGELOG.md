@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3](https://github.com/yevtyushkin/id_token_verifier/compare/v0.0.2...v0.0.3) - 2025-06-05
+
+### Other
+
+- Improve docs, add examples, bump `backoff-config` to `0.1.1` ([#7](https://github.com/yevtyushkin/id_token_verifier/pull/7))
+
 ## [0.0.2](https://github.com/yevtyushkin/id_token_verifier/compare/v0.0.1...v0.0.2) - 2025-06-03
 
 ### Other
