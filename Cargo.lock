@@ -130,13 +130,14 @@ dependencies = [
 
 [[package]]
 name = "backoff-config"
-version = "0.0.7"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf11b290be63406b1dbb8205cd61374fc3bccae1e113eb92ad47521f16006666"
+checksum = "6e50fdaef7f35605f9e9b4ef344d93e0d478c8be06dcb1a5441acd1ad0ffb060"
 dependencies = [
  "backon",
  "duration-str",
  "serde",
+ "smart-default",
 ]
 
 [[package]]
@@ -1780,6 +1781,17 @@ name = "smallvec"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8917285742e9f3e1683f0a9c4e6b57960b7314d0b08d30d1ecd426713ee2eee9"
+
+[[package]]
+name = "smart-default"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0eb01866308440fc64d6c44d9e86c5cc17adfe33c4d6eed55da9145044d0ffc1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "socket2"

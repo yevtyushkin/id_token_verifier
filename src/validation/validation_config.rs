@@ -24,6 +24,7 @@ pub struct ValidationConfig {
     /// This is an insecure option, please make sure you understand what you are doing.
     ///
     /// Mandatory during deserialization.
+    #[builder(into)]
     pub allowed_iss: OneOrVec<Iss>,
 
     /// Allowed [Aud] that an ID token must match.
@@ -32,6 +33,7 @@ pub struct ValidationConfig {
     /// This is an insecure option, please make sure you understand what you are doing.
     ///
     /// Mandatory during deserialization.
+    #[builder(into)]
     pub allowed_aud: OneOrVec<Aud>,
 
     /// Whether to force `exp` field validation.

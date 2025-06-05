@@ -1,39 +1,41 @@
 # 🔎 id_token_verifier ✅
 
+[![crates.io](https://img.shields.io/crates/v/id_token_verifier.svg)](https://crates.io/crates/id_token_verifier)
 [![codecov](https://codecov.io/gh/yevtyushkin/id_token_verifier/graph/badge.svg?token=KG76XN3GAR)](https://codecov.io/gh/yevtyushkin/id_token_verifier)
 
-[tokio](https://github.com/tokio-rs/tokio)-friendly, highly configurable, batteries-included OpenID Connect ID Token
-Verifier in Rust.
-
-### Features:
-
-- Direct or discovery-based JWKS.
-
-- Caching with fixed expiry and background refresh.
-
-- Pluggable retry strategy via [backoff-config](https://github.com/yevtyushkin/backoff-config).
-
-- [serde](https://github.com/serde-rs/serde)-friendly configuration (loadable from env or other sources).
-
-- Optional [tracing](https://github.com/tokio-rs/tracing) to dig into the verification flow.
-
-### Usage:
-
-1. Create an instance of [IdTokenVerifierDefault](src/verifier/id_token_verifier.rs) using an [IdTokenVerifierConfig](src/verifier/id_token_verifier_config.rs) and a [reqwest::Client](https://github.com/seanmonstar/reqwest).
-2. Define the target claims type with [Deserialize](https://docs.serde.rs/serde/trait.Deserialize.html):
-```rust
-#[derive(Debug, Deserialize)]
-struct MyClaims {
-    pub id: String,
-    pub email: String,
-    pub email_verified: bool
-}
-```
-3. Call `IdTokenVerifier#verify::<MyClaims>` and get the claims, or handle the error:
+A feature-rich, highly configurable OpenID Connect ID token verifier in Rust — empowering you to validate ID tokens as
+easily as this, while handling retries, caching, and more under the hood:
 
 ```rust
-match verifier.verify::<MyClaims>(id_token).await {
-    Ok(claims) => println!("Claims: {claims:?}"),
-    Err(error) => println!("Error: {error}")
+use id_token_verifier::*;
+use id_token_verifier::client::*;
+
+#[derive(serde::Deserialize)]
+struct MyClaims { 
+  sub: String,
+  email: Option<String>,
+  email_verified: Option<bool>,
+}
+
+async fn verify(
+  token: &str,
+  id_token_verifier: &IdTokenVerifierDefault
+) -> Result<MyClaims, IdTokenVerifierError> {
+  id_token_verifier.verify(token).await
 }
 ```
+
+### ✨ Features
+
+- 🔁 Configurable JWKS caching, including background refresh.
+- 🛠 Pluggable retry logic via [backoff_config](https://github.com/yevtyushkin/backoff_config)
+  and [backon](https://github.com/Xuanwo/backon).
+- ⚙️ Flexible validation settings.
+- 🧩 [serde](https://github.com/serde-rs/serde)-friendly configuration — load from config files or environment variables,
+  or use the provided config `Builder`s.
+- 📈 [tracing](https://github.com/tokio-rs/tracing) support via the optional tracing `feature` flag.
+
+## 📚 Examples
+
+- ✅ [Validating Google ID tokens](examples/google)  
+  Includes full setup for retries, JWKS caching, and validation settings.

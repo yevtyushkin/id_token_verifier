@@ -3,7 +3,7 @@ use id_token_verifier::cache::{JwksCacheConfig, default_expiration_duration};
 use id_token_verifier::client::{JwksClientConfig, JwksUrl, default_backoff};
 use id_token_verifier::util::OneOrVec;
 use id_token_verifier::validation::{Aud, Iss, ValidationConfig};
-use id_token_verifier::verifier::IdTokenVerifierConfig;
+use id_token_verifier::*;
 
 /// Default [IdTokenVerifierConfig] to use in tests.
 pub fn default_config(jwks_url: JwksUrl, verifier_name: &str) -> IdTokenVerifierConfig {

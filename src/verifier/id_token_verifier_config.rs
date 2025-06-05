@@ -37,7 +37,7 @@ mod tests {
     use crate::util::OneOrVec;
     use crate::validation::*;
     use crate::verifier::IdTokenVerifierConfig;
-    use backoff_config::BackoffConfig;
+    use backoff_config::*;
     use figment::Figment;
     use figment::providers::Env;
     use std::time::Duration;
@@ -84,7 +84,7 @@ mod tests {
                 IdTokenVerifierConfig {
                     client: JwksClientConfig {
                         jwks_url: JwksUrl::Direct("http://direct.uri".parse().unwrap()),
-                        backoff: BackoffConfig::Exponential {
+                        backoff: ExponentialBackoffConfig {
                             initial_delay: Duration::from_millis(100),
                             factor: 1.5,
                             max_delay: Duration::from_secs(15),
@@ -92,7 +92,8 @@ mod tests {
                             max_total_delay: Duration::from_secs(100),
                             jitter_enabled: true,
                             jitter_seed: Some(123),
-                        },
+                        }
+                        .into(),
                     },
                     cache: JwksCacheConfig {
                         enabled: true,
@@ -156,20 +157,24 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "tracing")]
     fn builder_with_all_fields_set() {
         let config = IdTokenVerifierConfig::builder()
             .client(
                 JwksClientConfig::builder()
                     .jwks_url(JwksUrl::Direct("http://direct.uri".parse().unwrap()))
-                    .backoff(BackoffConfig::Exponential {
-                        initial_delay: Duration::from_millis(100),
-                        factor: 1.5,
-                        max_delay: Duration::from_secs(15),
-                        max_retries: 10,
-                        max_total_delay: Duration::from_secs(100),
-                        jitter_enabled: true,
-                        jitter_seed: Some(123),
-                    })
+                    .backoff(
+                        ExponentialBackoffConfig {
+                            initial_delay: Duration::from_millis(100),
+                            factor: 1.5,
+                            max_delay: Duration::from_secs(15),
+                            max_retries: 10,
+                            max_total_delay: Duration::from_secs(100),
+                            jitter_enabled: true,
+                            jitter_seed: Some(123),
+                        }
+                        .into(),
+                    )
                     .build(),
             )
             .validation(
@@ -197,7 +202,7 @@ mod tests {
             IdTokenVerifierConfig {
                 client: JwksClientConfig {
                     jwks_url: JwksUrl::Direct("http://direct.uri".parse().unwrap()),
-                    backoff: BackoffConfig::Exponential {
+                    backoff: ExponentialBackoffConfig {
                         initial_delay: Duration::from_millis(100),
                         factor: 1.5,
                         max_delay: Duration::from_secs(15),
@@ -205,7 +210,8 @@ mod tests {
                         max_total_delay: Duration::from_secs(100),
                         jitter_enabled: true,
                         jitter_seed: Some(123),
-                    },
+                    }
+                    .into(),
                 },
                 cache: JwksCacheConfig {
                     enabled: true,
@@ -227,6 +233,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "tracing")]
     fn builder_with_default_fields() {
         let config = IdTokenVerifierConfig::builder()
             .client(

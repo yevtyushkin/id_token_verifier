@@ -2,8 +2,8 @@ mod common;
 
 use crate::common::*;
 use axum::Json;
-use backoff_config::BackoffConfig;
-use id_token_verifier::verifier::IdTokenVerifierDefault;
+use backoff_config::*;
+use id_token_verifier::*;
 use jsonwebtoken::Header;
 use reqwest::Client;
 use serde_json::json;
@@ -35,12 +35,13 @@ async fn retries_when_oidc_metadata_request_fails() -> anyhow::Result<()> {
 
     let http_client = Client::new();
     let mut config = default_config(uris.discover_jwks_url, "retries");
-    config.client.backoff = BackoffConfig::Constant {
+    config.client.backoff = ConstantBackoffConfig {
         delay: Duration::from_millis(200),
         max_retries: 5,
         jitter_enabled: true,
         jitter_seed: None,
-    };
+    }
+    .into();
 
     let verifier = IdTokenVerifierDefault::new(config, http_client);
     let id_token = TestIdToken::valid();
@@ -82,12 +83,12 @@ async fn retries_when_jwks_request_fails() -> anyhow::Result<()> {
 
     let http_client = Client::new();
     let mut config = default_config(uris.discover_jwks_url, "retries");
-    config.client.backoff = BackoffConfig::Constant {
+    config.client.backoff = BackoffConfig::Constant(ConstantBackoffConfig {
         delay: Duration::from_millis(200),
         max_retries: 5,
         jitter_enabled: true,
         jitter_seed: None,
-    };
+    });
 
     let verifier = IdTokenVerifierDefault::new(config, http_client);
     let id_token = TestIdToken::valid();

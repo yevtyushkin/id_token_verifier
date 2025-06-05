@@ -14,7 +14,7 @@ keywords = ["openidconnect", "id_token", "auth", "configuration", "jwks"]
 exclude = ["examples/*", "tests/*", "*.md"]
 
 [dependencies]
-backoff-config = "0.0.7"
+backoff-config = "0.1.1"
 backon = "1.5.1"
 bon = "3.6.3"
 derive_more = { version = "2.0.1", features = ["debug", "display"] }
@@ -35,7 +35,7 @@ chrono = "0.4.41"
 figment = { version = "0.10.19", features = ["env", "test"] }
 rsa = { version = "0.9.8" }
 serde_json = "1.0.140"
-tokio = { version = "1.45.0", features = ["macros", "test-util"] }
+tokio = { version = "1.45.0", features = ["macros", "rt-multi-thread", "test-util"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 uuid = { version = "1.17.0", features = ["v7"] }
 

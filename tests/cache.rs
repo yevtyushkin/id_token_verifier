@@ -2,7 +2,7 @@ mod common;
 
 use crate::common::*;
 use axum::Json;
-use id_token_verifier::verifier::IdTokenVerifierDefault;
+use id_token_verifier::*;
 use jsonwebtoken::Header;
 use reqwest::Client;
 use serde_json::json;
