@@ -1,6 +1,6 @@
 use crate::common::*;
 use id_token_verifier::validation::ValidationError;
-use id_token_verifier::verifier::*;
+use id_token_verifier::*;
 use jsonwebtoken::Header;
 use reqwest::Client;
 

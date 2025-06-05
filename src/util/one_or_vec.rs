@@ -41,4 +41,11 @@ mod tests {
 
         assert_eq!(OneOrVec::Vec::<()>(vec![]).is_empty(), true);
     }
+
+    #[test]
+    fn from_impls() {
+        assert_eq!(OneOrVec::One("one"), "one".into());
+        assert_eq!(OneOrVec::Vec(vec!["one"]), vec!["one"].into());
+        assert_eq!(OneOrVec::Vec::<()>(vec![]), vec![].into());
+    }
 }
