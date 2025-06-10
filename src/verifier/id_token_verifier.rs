@@ -5,8 +5,8 @@ use crate::validation::*;
 use crate::verifier::*;
 
 use jsonwebtoken as jwt;
-use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::DecodingKey;
+use jsonwebtoken::errors::ErrorKind;
 use serde::de::DeserializeOwned;
 use std::str::FromStr;
 use std::sync::Arc;
