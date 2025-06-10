@@ -14,14 +14,14 @@ use std::sync::Arc;
 /// ID token verifier.
 pub trait IdTokenVerifier {
     /// Verifies the given `token` and returns the extracted claims type.
-    fn verify<Claims: DeserializeOwned>(
+    fn verify<Claims: DeserializeOwned + 'static>(
         &self,
         token: &str,
     ) -> impl Future<Output = Result<Claims, IdTokenVerifierError>> + Send;
 }
 
 impl IdTokenVerifier for IdTokenVerifierDefault {
-    async fn verify<Claims: DeserializeOwned>(
+    async fn verify<Claims: DeserializeOwned + 'static>(
         &self,
         token: &str,
     ) -> Result<Claims, IdTokenVerifierError> {
