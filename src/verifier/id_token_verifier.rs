@@ -5,8 +5,8 @@ use crate::validation::*;
 use crate::verifier::*;
 
 use jsonwebtoken as jwt;
-use jsonwebtoken::DecodingKey;
 use jsonwebtoken::errors::ErrorKind;
+use jsonwebtoken::DecodingKey;
 use serde::de::DeserializeOwned;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -14,14 +14,14 @@ use std::sync::Arc;
 /// ID token verifier.
 pub trait IdTokenVerifier {
     /// Verifies the given `token` and returns the extracted claims type.
-    fn verify<Claims: DeserializeOwned>(
+    fn verify<Claims: DeserializeOwned + 'static>(
         &self,
         token: &str,
     ) -> impl Future<Output = Result<Claims, IdTokenVerifierError>> + Send;
 }
 
 impl IdTokenVerifier for IdTokenVerifierDefault {
-    async fn verify<Claims: DeserializeOwned>(
+    async fn verify<Claims: DeserializeOwned + 'static>(
         &self,
         token: &str,
     ) -> Result<Claims, IdTokenVerifierError> {
