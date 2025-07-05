@@ -37,5 +37,5 @@ async fn verify(
 
 ## 📚 Examples
 
-- ✅ [Validating Google ID tokens](examples/google)  
+- ✅ [Validating Google ID tokens](examples/google.rs)  
   Includes full setup for retries, JWKS caching, and validation settings.
