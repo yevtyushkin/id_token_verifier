@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.3...v0.1.4) - 2025-07-07
+
+### Other
+
+- Bump tokio from 1.45.1 to 1.46.1 ([#16](https://github.com/yevtyushkin/id_token_verifier/pull/16))
+- Bump reqwest from 0.12.20 to 0.12.22 ([#17](https://github.com/yevtyushkin/id_token_verifier/pull/17))
+
 ## [0.1.3](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.2...v0.1.3) - 2025-07-05
 
 ### Other
