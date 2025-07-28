@@ -16,7 +16,7 @@ exclude = ["examples/*", "tests/*", "*.md"]
 [dependencies]
 backoff-config = "0.1.1"
 backon = "1.5.1"
-bon = "3.6.4"
+bon = "3.6.5"
 derive_more = { version = "2.0.1", features = ["debug", "display"] }
 duration-str = { version = "0.17.0", features = ["serde"] }
 jsonwebtoken = "9.3.1"
