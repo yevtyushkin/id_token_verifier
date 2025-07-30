@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.4...v0.1.5) - 2025-07-30
+
+### Other
+
+- Bump tokio from 1.46.1 to 1.47.0 ([#21](https://github.com/yevtyushkin/id_token_verifier/pull/21))
+- Bump bon from 3.6.4 to 3.6.5 ([#19](https://github.com/yevtyushkin/id_token_verifier/pull/19))
+- Bump serde_json from 1.0.140 to 1.0.141 ([#20](https://github.com/yevtyushkin/id_token_verifier/pull/20))
+
 ## [0.1.4](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.3...v0.1.4) - 2025-07-07
 
 ### Other
