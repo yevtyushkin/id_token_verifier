@@ -34,7 +34,7 @@ base64 = "0.22.1"
 chrono = "0.4.41"
 figment = { version = "0.10.19", features = ["env", "test"] }
 rsa = { version = "0.9.8" }
-serde_json = "1.0.141"
+serde_json = "1.0.143"
 tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread", "test-util"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 uuid = { version = "1.17.0", features = ["v7"] }
