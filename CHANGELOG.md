@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.6](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.5...v0.1.6) - 2025-09-11
+
+### Other
+
+- Bump serde_json from 1.0.141 to 1.0.143 ([#33](https://github.com/yevtyushkin/id_token_verifier/pull/33))
+- Bump bon from 3.6.5 to 3.7.2 ([#34](https://github.com/yevtyushkin/id_token_verifier/pull/34))
+- Bump anyhow from 1.0.98 to 1.0.99 ([#32](https://github.com/yevtyushkin/id_token_verifier/pull/32))
+- Bump reqwest from 0.12.22 to 0.12.23 ([#30](https://github.com/yevtyushkin/id_token_verifier/pull/30))
+- Bump actions/checkout from 4 to 5 ([#27](https://github.com/yevtyushkin/id_token_verifier/pull/27))
+- Bump backon from 1.5.1 to 1.5.2 ([#25](https://github.com/yevtyushkin/id_token_verifier/pull/25))
+- Fix new clippy warning ([#35](https://github.com/yevtyushkin/id_token_verifier/pull/35))
+- Bump backoff-config from 0.1.1 to 0.1.2 ([#24](https://github.com/yevtyushkin/id_token_verifier/pull/24))
+- Bump tokio from 1.47.0 to 1.47.1 ([#23](https://github.com/yevtyushkin/id_token_verifier/pull/23))
+
 ## [0.1.5](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.4...v0.1.5) - 2025-07-30
 
 ### Other
