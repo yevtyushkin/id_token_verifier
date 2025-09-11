@@ -70,10 +70,10 @@ impl JwksCache {
     {
         {
             let state = self.inner.state.read().await;
-            if let Some(ref cache_state) = *state {
-                if cache_state.created_at.elapsed() < self.inner.expiration_duration {
-                    return Ok(cache_state.jwks.clone());
-                }
+            if let Some(ref cache_state) = *state
+                && cache_state.created_at.elapsed() < self.inner.expiration_duration
+            {
+                return Ok(cache_state.jwks.clone());
             }
         }
 
