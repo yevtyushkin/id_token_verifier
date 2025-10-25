@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.6...v0.1.7) - 2025-10-25
+
+### Other
+
+- Bump chrono from 0.4.41 to 0.4.42 ([#39](https://github.com/yevtyushkin/id_token_verifier/pull/39))
+- Bump tracing-subscriber from 0.3.19 to 0.3.20 ([#40](https://github.com/yevtyushkin/id_token_verifier/pull/40))
+- Bump thiserror from 2.0.12 to 2.0.17 ([#42](https://github.com/yevtyushkin/id_token_verifier/pull/42))
+- Bump serde from 1.0.219 to 1.0.228 ([#43](https://github.com/yevtyushkin/id_token_verifier/pull/43))
+- Bump url from 2.5.4 to 2.5.7 ([#37](https://github.com/yevtyushkin/id_token_verifier/pull/37))
+
 ## [0.1.6](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.5...v0.1.6) - 2025-09-11
 
 ### Other
