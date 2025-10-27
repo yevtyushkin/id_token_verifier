@@ -15,7 +15,7 @@ exclude = ["examples/*", "tests/*", "*.md"]
 
 [dependencies]
 backoff-config = "0.1.2"
-backon = "1.5.2"
+backon = "1.6.0"
 bon = "3.7.2"
 derive_more = { version = "2.0.1", features = ["debug", "display"] }
 duration-str = { version = "0.17.0", features = ["serde"] }
