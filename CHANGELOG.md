@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.8](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.7...v0.1.8) - 2026-02-03
+
+### Other
+
+- Batch dependency bump ([#59](https://github.com/yevtyushkin/id_token_verifier/pull/59))
+- Bump serde_json from 1.0.145 to 1.0.149 ([#53](https://github.com/yevtyushkin/id_token_verifier/pull/53))
+- Bump backoff-config from 0.1.2 to 0.1.3 ([#54](https://github.com/yevtyushkin/id_token_verifier/pull/54))
+- Bump uuid from 1.18.1 to 1.20.0 ([#55](https://github.com/yevtyushkin/id_token_verifier/pull/55))
+- Bump tokio from 1.47.1 to 1.49.0 ([#56](https://github.com/yevtyushkin/id_token_verifier/pull/56))
+- Downgrade to `actions/checkout@v5`
+- Bump uuid from 1.17.0 to 1.18.1 ([#49](https://github.com/yevtyushkin/id_token_verifier/pull/49))
+- Bump backon from 1.5.2 to 1.6.0 ([#50](https://github.com/yevtyushkin/id_token_verifier/pull/50))
+- Bump serde_json from 1.0.143 to 1.0.145 ([#47](https://github.com/yevtyushkin/id_token_verifier/pull/47))
+- Bump actions/checkout from 5 to 6 ([#51](https://github.com/yevtyushkin/id_token_verifier/pull/51))
+
 ## [0.1.7](https://github.com/yevtyushkin/id_token_verifier/compare/v0.1.6...v0.1.7) - 2025-10-25
 
 ### Other
