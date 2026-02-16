@@ -18,7 +18,7 @@ backoff-config = "0.1.4"
 backon = "1.6.0"
 bon = "3.8.2"
 derive_more = { version = "2.1.1", features = ["debug", "display"] }
-duration-str = { version = "0.19.0", features = ["serde"] }
+duration-str = { version = "0.20.0", features = ["serde"] }
 jsonwebtoken = { version = "10.3.0", features = ["rust_crypto"] }
 reqwest = { version = "0.13.1", features = ["json"] }
 serde = { version = "1.0.228", features = ["derive"] }
